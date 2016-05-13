@@ -2,6 +2,7 @@ package ca.gosecure.cspauditor.gui;
 
 import ca.gosecure.cspauditor.model.ContentSecurityPolicy;
 import ca.gosecure.cspauditor.model.Directive;
+import ca.gosecure.cspauditor.model.HeaderValidation;
 import com.esotericsoftware.minlog.Log;
 import org.apache.commons.io.IOUtils;
 
@@ -12,11 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
 
-/**
- * Created by parteau on 2/12/2016.
- */
 public class CspHeadersPanel {
 
 
@@ -30,15 +27,13 @@ public class CspHeadersPanel {
         return mainPanel;
     }
 
-    private static final URL ICON_HIGH = getAccessibleResource("/resources/Media/scan_issue_high_certain_rpt.png");
-    private static final URL ICON_MED  = getAccessibleResource("/resources/Media/scan_issue_medium_certain_rpt.png");
-    private static final URL ICON_LOW  = getAccessibleResource("/resources/Media/scan_issue_decoration_info_certain.png");
+    private static final URL ICON_HIGH = getAccessibleResource("/resources/media/scan_issue_high_certain_rpt.png");
+    private static final URL ICON_MED  = getAccessibleResource("/resources/media/scan_issue_medium_certain_rpt.png");
+    private static final URL ICON_LOW  = getAccessibleResource("/resources/media/scan_issue_decoration_info_certain.png");
 
     public void displayPolicy(java.util.List<ContentSecurityPolicy> p) {
 
-
         StringBuilder str = new StringBuilder();
-
 
         str.append("<html>");
         for(ContentSecurityPolicy policyOrig : p) {
@@ -49,10 +44,15 @@ public class CspHeadersPanel {
                 str.append("<br/><nobr>&nbsp;&nbsp;<b>" + d.getName() + "</b> " + (d.isImplicit() ? "<i>(Implicit taken from the default-src)</i>" : "") + "</nobr><br/>\n");
 
                 for (String value : d.getValues()) {
-                    if (!(d.getName().equals("script-src") || d.getName().equals("object-src")) && (value.equals("'unsafe-inline'") || value.equals("'unsafe-eval'") || value.equals("*"))) {
-                        str.append(iconify(value,ICON_MED,"orange"));
-                    } else if (value.equals("'unsafe-inline'") || value.equals("'unsafe-eval'") || value.equals("*")) {
+                    if (HeaderValidation.isAllowingAnyScript(d.getName(),value) ||
+                            HeaderValidation.isAllowingInlineScript(d.getName(),value) ||
+                            HeaderValidation.isAllowingUnsafeEvalScript(d.getName(),value)) {
                         str.append(iconify(value,ICON_HIGH,"red"));
+
+                    } else if (HeaderValidation.isAllowingAnyStyle(d.getName(),value) ||
+                            HeaderValidation.isAllowingAny(d.getName(),value)) {
+                        str.append(iconify(value,ICON_MED,"orange"));
+
                     } else {
                         str.append(iconify(value,ICON_LOW,""));
                     }

@@ -1,0 +1,5 @@
+rootProject.name = 'csp-auditor'
+include 'burp-api'
+include 'csp-auditor-core'
+include 'csp-auditor-burp-plugin'
+include 'csp-auditor-zap-plugin'

@@ -48,4 +48,9 @@ public class Directive {
         newList.addAll(values);
         return newList;
     }
+
+    @Override
+    public String toString() {
+        return getName()+": "+ String.join(" ",getValues());
+    }
 }

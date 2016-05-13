@@ -2,7 +2,6 @@ package burp;
 
 import ca.gosecure.cspauditor.gui.CspHeadersPanel;
 import ca.gosecure.cspauditor.model.ContentSecurityPolicy;
-import ca.gosecure.cspauditor.util.PolicyBuilder;
 import com.esotericsoftware.minlog.Log;
 
 import java.awt.*;
@@ -45,7 +44,7 @@ public class CspTab implements IMessageEditorTab {
         } else { //The tab will appears if the response is a PDF
             IResponseInfo responseInfo = helpers.analyzeResponse(respBytes);
 
-            Map<String,String> cspHeaders = PolicyBuilder.getCspHeader(responseInfo);
+            Map<String,String> cspHeaders = BurpPolicyBuilder.getCspHeader(responseInfo);
             return cspHeaders.size() > 0;
         }
     }
@@ -56,7 +55,7 @@ public class CspTab implements IMessageEditorTab {
 
         try {
             IResponseInfo responseInfo = helpers.analyzeResponse(respBytes);
-            List<ContentSecurityPolicy> p =PolicyBuilder.buildFromResponse(responseInfo);
+            List<ContentSecurityPolicy> p = BurpPolicyBuilder.buildFromResponse(responseInfo);
             cspHeaders.displayPolicy(p);
         } catch (Exception e) {
             Log.error(e.getMessage());

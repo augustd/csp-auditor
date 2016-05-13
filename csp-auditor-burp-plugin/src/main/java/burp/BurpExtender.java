@@ -3,7 +3,6 @@ package burp;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class BurpExtender implements IBurpExtender, IMessageEditorTabFactory {
 

@@ -1,0 +1,9 @@
+<p>The configuration is removing boundary that would block XSS.</p>
+<br>
+<p>The <code>unsafe-eval</code> directive is allowing script to construct scripts dynamically to run them.
+An attacker, exploiting a XSS, might be able to take advantage of those risky scripts using eval.
+The directive is not a confirmation that <code>eval()</code> or <code>setTimeout()</code> are use.</p>
+<br>
+<b>Weak configuration</b>
+<pre><code>script-src: unsafe-eval</code></pre>
+<br/>
