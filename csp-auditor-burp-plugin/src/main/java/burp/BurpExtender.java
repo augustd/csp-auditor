@@ -1,5 +1,6 @@
 package burp;
 
+import burp.scanner.CspHeaderScanner;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
@@ -8,6 +9,7 @@ public class BurpExtender implements IBurpExtender, IMessageEditorTabFactory {
 
     private  IBurpExtenderCallbacks callbacks;
     private IExtensionHelpers helpers;
+    private CspHeaderScanner scanner;
 
     public void registerExtenderCallbacks(final IBurpExtenderCallbacks callbacks) {
 
@@ -30,6 +32,9 @@ public class BurpExtender implements IBurpExtender, IMessageEditorTabFactory {
         Log.DEBUG();
 
         this.callbacks.registerMessageEditorTabFactory(this);
+
+        scanner = new CspHeaderScanner(helpers);
+        this.callbacks.registerScannerCheck(scanner);
     }
 
 

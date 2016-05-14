@@ -12,12 +12,14 @@ public class CspIssue {
     private final String title;
     private final String message;
     private final Directive directive;
+    private final String highlightedValue;
 
-    public CspIssue(int severity, String title, String message, Directive directive) {
+    public CspIssue(int severity, String title, String message, Directive directive,String highlightValue) {
         this.severity = severity;
         this.title = title;
         this.message = message;
         this.directive = directive;
+        this.highlightedValue = highlightValue;
     }
 
     public int getSeverity() {
@@ -32,10 +34,23 @@ public class CspIssue {
         return message;
     }
 
+    public Directive getDirective() {
+        return directive;
+    }
+
+    public String getHighlightedValue() {
+        return highlightedValue;
+    }
+
     public String getLocalizedMessage() {
-        InputStream in = getClass().getResourceAsStream("/resources/descriptions/"+message);
+        InputStream in = getClass().getResourceAsStream("/resources/descriptions/"+message+".htm");
+        if(in == null) {
+            return "Localized message not found :(";
+        }
         return convertStreamToString(in);
     }
+
+
 
 
     private static String convertStreamToString(InputStream is) {

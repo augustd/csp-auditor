@@ -37,15 +37,15 @@ public class HeaderValidation {
             for (Directive d : policy.getDirectives().values()) {
                 for (String value : d.getValues()) {
                     if (isAllowingAnyScript(d.getName(),value)) {
-                        issues.add(new CspIssue(CspIssue.MED, "External scripts allowed", "issue_script_wildcard",  d));
+                        issues.add(new CspIssue(CspIssue.MED, "External scripts allowed", "issue_script_wildcard",  d, value));
                     } else if (isAllowingInlineScript(d.getName(),value)) {
-                        issues.add(new CspIssue(CspIssue.MED, "Inline scripts can be inserted", "issue_script_unsafe_inline",d));
+                        issues.add(new CspIssue(CspIssue.MED, "Inline scripts can be inserted", "issue_script_unsafe_inline",d, value));
                     } else if (isAllowingUnsafeEvalScript(d.getName(),value)) {
-                        issues.add(new CspIssue(CspIssue.MED, "Libraries using eval or setTimeout are allow", "issue_script_unsafe_eval",d));
+                        issues.add(new CspIssue(CspIssue.MED, "Libraries using eval or setTimeout are allow", "issue_script_unsafe_eval",d, value));
                     } else if (isAllowingAnyStyle(d.getName(),value)) {
-                        issues.add(new CspIssue(CspIssue.LOW, "External stylesheets allowed", "issue_style", d));
+                        issues.add(new CspIssue(CspIssue.LOW, "External stylesheets allowed", "issue_style", d, value));
                     } else if (isAllowingAny(d.getName(),value)) {
-                        issues.add(new CspIssue(CspIssue.INFO, "Use of wildcard", "issue_wildcard_limited", d));
+                        issues.add(new CspIssue(CspIssue.INFO, "Use of wildcard", "issue_wildcard_limited", d, value));
                     }
                 }
             }

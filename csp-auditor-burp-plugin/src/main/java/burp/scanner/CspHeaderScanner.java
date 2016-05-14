@@ -1,5 +1,15 @@
-package burp;
+package burp.scanner;
 
+import burp.BurpPolicyBuilder;
+import burp.IExtensionHelpers;
+import burp.IHttpRequestResponse;
+import burp.IHttpRequestResponseWithMarkers;
+import burp.IHttpService;
+import burp.IRequestInfo;
+import burp.IResponseInfo;
+import burp.IScanIssue;
+import burp.IScannerCheck;
+import burp.IScannerInsertionPoint;
 import ca.gosecure.cspauditor.model.ContentSecurityPolicy;
 import ca.gosecure.cspauditor.model.CspIssue;
 import ca.gosecure.cspauditor.model.HeaderValidation;
@@ -19,14 +29,15 @@ public class CspHeaderScanner implements IScannerCheck {
 
     @Override
     public List<IScanIssue> doPassiveScan(IHttpRequestResponse baseRequestResponse) {
-        List<IScanIssue> issues = new ArrayList<>();
-
 //        IRequestInfo requestInfo = helpers.analyzeRequest(baseRequestResponse.getRequest());
         IResponseInfo responseInfo = helpers.analyzeResponse(baseRequestResponse.getResponse());
 
         List<ContentSecurityPolicy> csp = BurpPolicyBuilder.buildFromResponse(responseInfo);
 
         List<CspIssue> cspIssues = HeaderValidation.validateCspConfig(csp);
+
+        if(cspIssues.size() == 0)
+            return new ArrayList<IScanIssue>();
 
         return convertIssues(cspIssues,baseRequestResponse);
     }
@@ -43,8 +54,7 @@ public class CspHeaderScanner implements IScannerCheck {
 
     private List<IScanIssue> convertIssues(List<CspIssue> issues,IHttpRequestResponse baseRequestResponse) {
 
-
-        IRequestInfo reqInfo = helpers.analyzeRequest(baseRequestResponse.getRequest());
+        IRequestInfo reqInfo = helpers.analyzeRequest(baseRequestResponse.getHttpService(), baseRequestResponse.getRequest());
 
         List<IScanIssue> burpIssues = new ArrayList<>();
         Set<String> types = new HashSet<>(); //Avoid issuing multiples alert for the same type.
@@ -52,7 +62,7 @@ public class CspHeaderScanner implements IScannerCheck {
             if(!types.contains(i.getMessage())) {
                 types.add(i.getMessage());
 
-                String name = i.getTitle();
+                String name = "CSP: "+i.getTitle();
                 String detail = i.getLocalizedMessage();
                 String severity;
                 //See IScanIssue.getSeverity() doc for more info
@@ -69,7 +79,12 @@ public class CspHeaderScanner implements IScannerCheck {
                     continue;
                 }
                 String confidence = "Firm";
-                burpIssues.add(new BurpCspIssue(baseRequestResponse.getHttpService(),reqInfo.getUrl(),baseRequestResponse,name,detail,severity,confidence));
+
+                ;
+                burpIssues.add(new BurpCspIssue(
+                        baseRequestResponse.getHttpService(),
+                        reqInfo.getUrl(),new MockHttpRequestResponse(baseRequestResponse,i.getHighlightedValue()),
+                        name,detail,severity,confidence));
             }
         }
         return burpIssues;

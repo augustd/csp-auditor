@@ -27,9 +27,9 @@ public class CspHeadersPanel {
         return mainPanel;
     }
 
-    private static final URL ICON_HIGH = getAccessibleResource("/resources/media/scan_issue_high_certain_rpt.png");
-    private static final URL ICON_MED  = getAccessibleResource("/resources/media/scan_issue_medium_certain_rpt.png");
-    private static final URL ICON_LOW  = getAccessibleResource("/resources/media/scan_issue_decoration_info_certain.png");
+    private static final URL ICON_HIGH = getAccessibleResource("/resources/Media/scan_issue_high_certain_rpt.png");
+    private static final URL ICON_MED  = getAccessibleResource("/resources/Media/scan_issue_medium_certain_rpt.png");
+    private static final URL ICON_LOW  = getAccessibleResource("/resources/Media/scan_issue_decoration_info_certain.png");
 
     public void displayPolicy(java.util.List<ContentSecurityPolicy> p) {
 

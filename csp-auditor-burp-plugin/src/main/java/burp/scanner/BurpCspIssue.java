@@ -1,4 +1,8 @@
-package burp;
+package burp.scanner;
+
+import burp.IHttpRequestResponse;
+import burp.IHttpService;
+import burp.IScanIssue;
 
 import java.net.URL;
 
