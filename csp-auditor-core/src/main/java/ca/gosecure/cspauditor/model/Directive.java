@@ -1,6 +1,7 @@
 package ca.gosecure.cspauditor.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Directive {
@@ -51,6 +52,24 @@ public class Directive {
 
     @Override
     public String toString() {
-        return getName()+": "+ String.join(" ",getValues());
+        return getName()+": "+ join("",getValues());
+    }
+
+    /**
+     * In replacement of String.join() from Java 8.
+     * @param delimiter the delimiter that separates each element
+     * @param elements the elements to join together.
+     * @return a new String that is composed of the elements separated by the delimiter
+     */
+    public static String join(String delimiter, List<String> elements)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < elements.size(); i++)
+        {
+            sb.append(elements.get(i));
+            if(i < elements.size() - 1)
+                sb.append(delimiter);
+        }
+        return sb.toString();
     }
 }
