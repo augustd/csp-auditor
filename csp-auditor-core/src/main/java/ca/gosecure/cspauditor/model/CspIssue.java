@@ -47,7 +47,12 @@ public class CspIssue {
         if(in == null) {
             return "Localized message not found :(";
         }
-        return convertStreamToString(in);
+
+        String description = convertStreamToString(in);
+
+        return description + "<b>Weak configuration</b><br/>\n" +
+                "<pre><code>"+directive.getName()+": "+highlightedValue+"</code></pre>\n" +
+                "<br/>";
     }
 
 

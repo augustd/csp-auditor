@@ -1,0 +1,25 @@
+#https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.0.1/angular.js
+
+cdnjs.cloudflare.com/ajax/libs/angular.js/
+
+#//code.angularjs.org/1.0.1/angular-1.0.1.js
+
+code.angularjs.org
+
+#//ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.js
+#//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js
+#//ajax.googleapis.com/ajax/libs/angularjs/1.1.3/angular.min.js
+#//ajax.googleapis.com/ajax/libs/yui/2.8.0r4/build/charts/assets/charts.swf?allowedDomain=\"})))}catch(e){alert(1337)}//
+#//ajax.googleapis.com/jsapi?callback=alert
+#//ajax.googleapis.com/ajax/services/feed/find?v=1.0&callback=click
+
+ajax.googleapis.com/ajax/libs/angularjs/
+ajax.googleapis.com/ajax/libs/yui/
+ajax.googleapis.com/jsapi
+ajax.googleapis.com/ajax/services/feed/find
+
+#http://d.yimg.com/autoc.finance.yahoo.com/autoc?callback=alert&query=yah&lang=en&region=us
+d.yimg.com
+
+#JS Delivr
+cdn.jsdelivr.net
