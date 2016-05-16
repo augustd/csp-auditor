@@ -27,6 +27,19 @@ public class HeaderValidation {
         return (name.equals("style-src") && value.equals("*"));
     }
 
+    public static boolean isUserContentHost(String name, String value) {
+        if(!(name.equals("script-src") || name.equals("object-src"))) {
+            return false;
+        }
+        return WeakCdnHost.getInstance().isUserContentHost(value);
+    }
+
+    public static boolean isHostingVulnerableJs(String name, String value) {
+        if(!(name.equals("script-src") || name.equals("object-src"))) {
+            return false;
+        }
+        return WeakCdnHost.getInstance().isHostingVulnerableJs(value);
+    }
 
     public static List<CspIssue> validateCspConfig(List<ContentSecurityPolicy> csp) {
         List<CspIssue> issues = new ArrayList<>();
@@ -46,6 +59,10 @@ public class HeaderValidation {
                         issues.add(new CspIssue(CspIssue.LOW, "External stylesheets allowed", "issue_style", d, value));
                     } else if (isAllowingAny(d.getName(),value)) {
                         issues.add(new CspIssue(CspIssue.INFO, "Use of wildcard", "issue_wildcard_limited", d, value));
+                    } else if (isUserContentHost(d.getName(), value)) {
+                        issues.add(new CspIssue(CspIssue.INFO, "The domain is hosting user content", "risky_host_user_content", d, value));
+                    } else if (isUserContentHost(d.getName(), value)) {
+                        issues.add(new CspIssue(CspIssue.INFO, "The domain is hosting vulnerable JavaScript", "risky_host_known_vulnerable_js", d, value));
                     }
                 }
             }
