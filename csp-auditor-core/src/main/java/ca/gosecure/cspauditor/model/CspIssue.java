@@ -50,13 +50,17 @@ public class CspIssue {
 
         String description = convertStreamToString(in);
 
-        return description + "<b>Weak configuration</b><br/>\n" +
-                "<pre><code>"+directive.getName()+": "+highlightedValue+"</code></pre>\n" +
-                "<br/>";
+        if(directive != null) {
+            return description + "<b>Weak configuration</b><br/>\n" +
+                    "<pre><code>"+directive.getName()+": "+highlightedValue+"</code></pre>\n" +
+                    "<br/>";
+        }
+        else {
+            return description + "<b>Weak configuration</b><br/>\n" +
+                    "<pre><code>"+highlightedValue+"</code></pre>\n" +
+                    "<br/>";
+        }
     }
-
-
-
 
     private static String convertStreamToString(InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");

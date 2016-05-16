@@ -38,7 +38,7 @@ public class ContentSecurityPolicy {
         Directive defaultSrc = directives.get("default-src");
 
         if(defaultSrc == null) {
-            defaultSrc = new Directive("default-src", Arrays.asList("*"), true);
+            defaultSrc = new Directive("default-src", Arrays.asList("'self'"), true);
         }
         else {
             pol.addDirective(defaultSrc);

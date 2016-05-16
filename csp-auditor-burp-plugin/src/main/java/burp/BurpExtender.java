@@ -4,6 +4,7 @@ import burp.scanner.CspHeaderScanner;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class BurpExtender implements IBurpExtender, IMessageEditorTabFactory {
 
@@ -17,6 +18,15 @@ public class BurpExtender implements IBurpExtender, IMessageEditorTabFactory {
         this.helpers = callbacks.getHelpers();
         this.callbacks.setExtensionName("CSP Auditor");
 
+        PrintWriter stdout = new PrintWriter(callbacks.getStdout(), true);
+        stdout.println("== CSP Auditor plugin ==");
+        stdout.println("This plugin provided a readable view of CSP headers in Response Tab. ");
+        stdout.println("It also include Passive scan rules to detect weak CSP configuration.");
+        stdout.println(" - Github : https://github.com/GoSecure/csp-auditor");
+        stdout.println("");
+        stdout.println("== License ==");
+        stdout.println("CSP Auditor plugin is release under LGPL.");
+        stdout.println("");
 
         Log.setLogger(new Log.Logger() {
             @Override

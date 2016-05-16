@@ -5,6 +5,8 @@ import java.util.List;
 
 public class HeaderValidation {
 
+    private static final String[] deprecatedHeaders = {"X-Content-Security-Policy"};
+
     public static boolean isAllowingAnyScript(String name, String value) {
         return (name.equals("script-src") || name.equals("object-src"))
                 && (value.equals("*"));
@@ -41,11 +43,20 @@ public class HeaderValidation {
         return WeakCdnHost.getInstance().isHostingVulnerableJs(value);
     }
 
+    public static boolean isHeaderDeprecated(String headerName) {
+        return !"content-security-policy".equals(headerName.toLowerCase());
+    }
+
     public static List<CspIssue> validateCspConfig(List<ContentSecurityPolicy> csp) {
         List<CspIssue> issues = new ArrayList<>();
 
         for(ContentSecurityPolicy policyOrig : csp) {
             ContentSecurityPolicy policy = policyOrig.getComputedPolicy();
+
+            if(isHeaderDeprecated(policy.getHeaderName())){
+                issues.add(new CspIssue(CspIssue.MED, "Deprecated header name", //
+                        "issue_deprecated_header_name",null,policy.getHeaderName()));
+            }
 
             for (Directive d : policy.getDirectives().values()) {
                 for (String value : d.getValues()) {
@@ -57,12 +68,12 @@ public class HeaderValidation {
                         issues.add(new CspIssue(CspIssue.MED, "Libraries using eval or setTimeout are allow", "issue_script_unsafe_eval",d, value));
                     } else if (isAllowingAnyStyle(d.getName(),value)) {
                         issues.add(new CspIssue(CspIssue.LOW, "External stylesheets allowed", "issue_style", d, value));
+                    } else if (isUserContentHost(d.getName(), value)) {
+                        issues.add(new CspIssue(CspIssue.MED, "The domain is hosting user content", "issue_risky_host_user_content", d, value));
+                    } else if (isHostingVulnerableJs(d.getName(), value)) {
+                        issues.add(new CspIssue(CspIssue.MED, "The domain is hosting vulnerable JavaScript", "issue_risky_host_known_vulnerable_js", d, value));
                     } else if (isAllowingAny(d.getName(),value)) {
                         issues.add(new CspIssue(CspIssue.INFO, "Use of wildcard", "issue_wildcard_limited", d, value));
-                    } else if (isUserContentHost(d.getName(), value)) {
-                        issues.add(new CspIssue(CspIssue.INFO, "The domain is hosting user content", "risky_host_user_content", d, value));
-                    } else if (isUserContentHost(d.getName(), value)) {
-                        issues.add(new CspIssue(CspIssue.INFO, "The domain is hosting vulnerable JavaScript", "risky_host_known_vulnerable_js", d, value));
                     }
                 }
             }

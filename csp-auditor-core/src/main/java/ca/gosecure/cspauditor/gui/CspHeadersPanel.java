@@ -46,7 +46,9 @@ public class CspHeadersPanel {
                 for (String value : d.getValues()) {
                     if (HeaderValidation.isAllowingAnyScript(d.getName(),value) ||
                             HeaderValidation.isAllowingInlineScript(d.getName(),value) ||
-                            HeaderValidation.isAllowingUnsafeEvalScript(d.getName(),value)) {
+                            HeaderValidation.isAllowingUnsafeEvalScript(d.getName(),value) ||
+                            HeaderValidation.isUserContentHost(d.getName(),value) ||
+                            HeaderValidation.isHostingVulnerableJs(d.getName(),value)) {
                         str.append(iconify(value,ICON_HIGH,"red"));
 
                     } else if (HeaderValidation.isAllowingAnyStyle(d.getName(),value) ||

@@ -3,8 +3,6 @@ package burp.scanner;
 import burp.BurpPolicyBuilder;
 import burp.IExtensionHelpers;
 import burp.IHttpRequestResponse;
-import burp.IHttpRequestResponseWithMarkers;
-import burp.IHttpService;
 import burp.IRequestInfo;
 import burp.IResponseInfo;
 import burp.IScanIssue;

@@ -1,7 +1,4 @@
-<p>The configuration is removing boundary that would block XSS.</p>
-<br>
-<p>The <code>unsafe-inline</code> directive is allowing script to be insert <i>"inline"</i> in the HTML page. An attacker, exploiting a XSS, will be able to use JavaScript event to load malicious scripts.</p>
-<br>
-<b>Weak configuration</b>
-<pre><code>script-src: unsafe-inline</code></pre>
-<br/>
+<p>The configuration removes the XSS sandboxing feature of Content Security Policy.</p>
+
+<p>The <code>'unsafe-inline'</code> directive allows scripts to be inserted <i>"inline"</i> in the HTML page.
+    An attacker, exploiting a XSS, will be able to use JavaScript events to load malicious scripts.</p>

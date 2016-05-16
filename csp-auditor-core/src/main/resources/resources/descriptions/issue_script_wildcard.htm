@@ -1,12 +1,7 @@
-<p>The configuration is removing boundary that would block XSS.</p>
-<br>
-<p>The <code>script-src</code> directive is allowing script from any domain. An attacker, exploiting a XSS, will be able to load external script.</p>
-<br>
-<b>Weak configuration</b>
-<pre><code>script-src: *</code></pre>
+<p>The configuration removes the XSS sandboxing feature of Content Security Policy.</p>
+
+<p>The <code>script-src</code> directive allows scripts from any domain to be loaded. An attacker, exploiting a XSS, will be able to load external scripts.</p>
 <br/>
-
-
 <b>References:</b><br/>
 <br/>
 <a href="https://developer.mozilla.org/en/docs/Web/Security/CSP/CSP_policy_directives">CSP Policy Directives</a>
