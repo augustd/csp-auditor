@@ -1,5 +1,5 @@
 <p>The configuration removes the XSS sandboxing feature of Content Security Policy.</p>
 
 <p>The <code>'unsafe-eval'</code> directive allows scripts to evaluate strings as JavaScript.
-An attacker, exploiting a XSS, might be able to take advantage of those risky scripts using eval.
+An attacker might be able to take advantage of those risky scripts using eval functions to trigger a DOM XSS.
 The directive is not a confirmation that <code>eval()</code> or <code>setTimeout()</code> are used.</p>
