@@ -28,7 +28,8 @@ jar{
         configurations.compile.findAll{
             //Exclude ZAP provided dependency (see above)
             !(it.getName() in ['zap-2.5.0.jar','jericho-html-3.1.jar','commons-configuration-1.10.jar',
-                               'commons-httpclient-3.1.jar'])
+                               'commons-httpclient-3.1.jar', 'log4j-1.2.17.jar'] ||
+                    it.getName().startsWith("commons-"))
         }.collect {
             //println it.getName();
             return it.isDirectory() ? it : zipTree(it)
