@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
 
 public class PolicyBuilder {
 
-    protected static List<String> CSP_HEADERS = Arrays.asList("x-content-security-policy", "x-webkit-csp", "content-security-policy");
+    protected static List<String> CSP_HEADERS = Arrays.asList("x-content-security-policy", "x-webkit-csp", "content-security-policy", "content-security-policy-report-only");
 
     /**
      * Converted CSP header in the form of string to the object model.

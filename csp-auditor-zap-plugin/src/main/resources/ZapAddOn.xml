@@ -1,0 +1,20 @@
+<zapaddon>
+    <name>CSP Auditor</name>
+    <version>1</version>
+    <description>Display Content Security Policy header.</description>
+    <author>Philippe Arteau (h3xStream)</author>
+    <url>https://github.com/GoSecure/csp-auditor</url>
+    <changes/>
+    <dependson/>
+    <extensions>
+      <extension>org.zaproxy.zap.extension.cspauditor.CspAuditorExtension</extension>
+    </extensions>
+    <ascanrules/>
+    <pscanrules>
+            <pscanrule>org.zaproxy.zap.extension.cspauditor.CspAuditorPassiveScanner</pscanrule>
+    </pscanrules>
+    <filters/>
+    <files/>
+    <not-before-version>2.4.3</not-before-version>
+    <not-from-version/>
+</zapaddon>

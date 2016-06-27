@@ -41,7 +41,7 @@ public class CspTab implements IMessageEditorTab {
     public boolean isEnabled(byte[] respBytes, boolean isRequest) {
         if (isRequest) {
             return false;
-        } else { //The tab will appears if the response is a PDF
+        } else { //The tab will appears if it has at least one CSP header
             IResponseInfo responseInfo = helpers.analyzeResponse(respBytes);
 
             Map<String,String> cspHeaders = BurpPolicyBuilder.getCspHeader(responseInfo);

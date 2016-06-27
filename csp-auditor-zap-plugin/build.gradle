@@ -1,9 +1,37 @@
 group 'csp-auditor'
 version '1.0-SNAPSHOT'
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     compile group: 'com.esotericsoftware', name: 'minlog', version: '1.3'
-    compile group: 'commons-io', name: 'commons-io', version: '2.4'
     testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
-    compile project(':burp-api')
+    compile project(':csp-auditor-core')
+    //ZAP Dependencies
+    compile group: 'commons-configuration', name: 'commons-configuration', version: '1.10'
+    compile group: 'net.htmlparser.jericho', name: 'jericho-html', version: '3.1'
+    compile group: 'log4j', name: 'log4j', version: '1.2.17'
+    compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    compile name: 'zap-2.5.0' //Static jar
+}
+
+
+
+jar{
+    archiveName 'cspauditor-alpha-1.zap'
+
+    from {
+        configurations.compile.findAll{
+            //Exclude ZAP provided dependency (see above)
+            !(it.getName() in ['zap-2.5.0.jar','jericho-html-3.1.jar','commons-configuration-1.10.jar',
+                               'commons-httpclient-3.1.jar'])
+        }.collect {
+            //println it.getName();
+            return it.isDirectory() ? it : zipTree(it)
+        }
+    }
 }

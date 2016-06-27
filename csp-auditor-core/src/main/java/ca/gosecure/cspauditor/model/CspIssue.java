@@ -51,12 +51,12 @@ public class CspIssue {
         String description = convertStreamToString(in);
 
         if(directive != null) {
-            return description + "<b>Weak configuration</b><br/>\n" +
+            return description + "\n<b>Weak configuration</b><br/>\n" +
                     "<pre><code>"+directive.getName()+": "+highlightedValue+"</code></pre>\n" +
                     "<br/>";
         }
         else {
-            return description + "<b>Weak configuration</b><br/>\n" +
+            return description + "\n<b>Weak configuration</b><br/>\n" +
                     "<pre><code>"+highlightedValue+"</code></pre>\n" +
                     "<br/>";
         }

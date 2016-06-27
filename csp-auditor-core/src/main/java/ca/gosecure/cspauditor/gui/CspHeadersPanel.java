@@ -23,7 +23,7 @@ public class CspHeadersPanel {
         mainPanel.setLayout(new BorderLayout());
     }
 
-    public Component getComponent() {
+    public JComponent getComponent() {
         return mainPanel;
     }
 
@@ -74,10 +74,25 @@ public class CspHeadersPanel {
 
     private static String iconify(String message,URL icon,String color) {
         StringBuilder buffer = new StringBuilder("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-        buffer.append("<img height='14' width='14' src='file:///").append(icon ==null ? "":icon.getFile()).append("'>");
-        buffer.append("&nbsp;<font title='blah' color='").append(color).append("'>");
+
+        buffer.append("<font title='blah' color='").append(color).append("'>");
+        if(icon != null) {
+            buffer.append("<img height='14' width='14' src='file:///").append(icon == null ? "" : icon.getFile()).append("'>");
+        }
+        else {
+            buffer.append(" - ");
+        }
+
+        buffer.append("&nbsp;");
         buffer.append(message);
-        buffer.append("</font><br/>\n");
+
+//        if(icon != null) {
+            buffer.append("<br/>\n");
+//        }
+//        else {
+//            buffer.append("</li>");
+//        }
+        buffer.append("</font>");
         return buffer.toString();
     }
 
@@ -86,8 +101,11 @@ public class CspHeadersPanel {
         URL urlResource = CspHeadersPanel.class.getResource(url);
         if(urlResource == null) {
             Log.error("Resource not found "+url);
+            return null;
         }
-        if(!urlResource.getFile().contains(".jar!")) {
+
+        if(!urlResource.getFile().contains(".jar!") && !urlResource.getFile().contains(".zap!"))
+        {
             return urlResource;
         }
 
