@@ -47,7 +47,10 @@ public class CspHeaderScanner implements IScannerCheck {
 
     @Override
     public int consolidateDuplicateIssues(IScanIssue existingIssue, IScanIssue newIssue) {
-        return 0;
+        if(existingIssue.getUrl().equals(newIssue.getUrl())) {
+            return -1; //Keep the old issue
+        }
+        return 0; //Accept both
     }
 
     private List<IScanIssue> convertIssues(List<CspIssue> issues,IHttpRequestResponse baseRequestResponse) {
