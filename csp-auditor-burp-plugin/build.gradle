@@ -9,6 +9,7 @@ dependencies {
 }
 
 jar {
+  archiveName 'csp-auditor-burp-1.jar'
   from {
     configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
   }
