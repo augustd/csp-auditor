@@ -1,6 +1,7 @@
 Uuid: 35237408a06043e9945a11016fcbac18
 ExtensionType: 1
 Name: CSP Auditor
+RepoName: csp-auditor
 ScreenVersion: 1.0
 SerialVersion: 1
 MinPlatformVersion: 0
