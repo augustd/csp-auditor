@@ -1,5 +1,6 @@
 package ca.gosecure.cspauditor.model;
 
+import ca.gosecure.cspauditor.util.SimpleListFile;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.BufferedReader;
@@ -43,27 +44,13 @@ public class WeakCdnHost {
 
     private void loadFileToSet(String file,Set<String> set) throws IOException {
         Log.debug("Loading file : "+file);
-        InputStream in = getClass().getResourceAsStream(file);
 
-        BufferedReader r1 = new BufferedReader(new InputStreamReader(in));
-        String line;
-        while((line = r1.readLine()) != null) {
+        SimpleListFile.openFile(file, (String line) -> {
 
-            //Remove comment
-            int indexComment = line.indexOf("#");
-            if(indexComment != -1) {
-                line = line.substring(0,indexComment);
-            }
-            line = line.trim();
-
-            if("".equals(line)) {
-                continue;
-            }
-
+            //Adding precise main
             set.add(line);
 
             //Adding subpath
-
             String subPath = line;
             int lastIndex = -1;
             while((lastIndex = subPath.lastIndexOf("/")) != -1) {
@@ -73,7 +60,7 @@ public class WeakCdnHost {
                 subPath = subPath.substring(0, subPath.length()-1); //Remove the trailing slash
             }
 
-        }
+        });
 
         //Add wildcard on subdomain
 

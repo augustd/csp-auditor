@@ -8,7 +8,6 @@ import java.net.URL;
 
 public class BurpCspIssue implements IScanIssue {
 
-
     private IHttpService httpService;
     private URL url;
     private IHttpRequestResponse httpMessage;

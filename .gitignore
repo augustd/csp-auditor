@@ -12,6 +12,8 @@ test-output
 
 #Gradle
 .gradle
+classes/
+
 
 #Build directories
 bin/

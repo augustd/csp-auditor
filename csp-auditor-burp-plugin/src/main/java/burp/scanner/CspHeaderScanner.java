@@ -81,7 +81,7 @@ public class CspHeaderScanner implements IScannerCheck {
                 }
                 String confidence = "Firm";
 
-                ;
+
                 burpIssues.add(new BurpCspIssue(
                         baseRequestResponse.getHttpService(),
                         reqInfo.getUrl(),new MockHttpRequestResponse(baseRequestResponse,i.getHighlightedValue()),

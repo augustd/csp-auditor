@@ -10,7 +10,6 @@ import java.util.List;
 public class MockHttpRequestResponse implements IHttpRequestResponseWithMarkers {
 
     IHttpRequestResponse actual;
-    String highlightedValues;
     List<int[]> responseMarkers = new ArrayList<>();
 
     MockHttpRequestResponse(IHttpRequestResponse actual, String... highlightedValues) {
@@ -57,7 +56,7 @@ public class MockHttpRequestResponse implements IHttpRequestResponseWithMarkers 
 
     @Override
     public String getHighlight() {
-        return "http";
+        return actual.getHighlight();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package burp;
 
 import burp.scanner.CspHeaderScanner;
+import burp.tab.ConfigurationHelperTab;
 import com.esotericsoftware.minlog.Log;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class BurpExtender implements IBurpExtender, IMessageEditorTabFactory {
 
         scanner = new CspHeaderScanner(helpers);
         this.callbacks.registerScannerCheck(scanner);
+        this.callbacks.addSuiteTab(new ConfigurationHelperTab(this.callbacks));
     }
 
 

@@ -1,5 +1,6 @@
 package ca.gosecure.cspauditor.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +65,19 @@ public class ContentSecurityPolicy {
         return targetDir != null ? targetDir.clone(name) : defaultSrc.cloneImplicit(name);
     }
 
+    public String toHeaderString() {
+        StringBuilder str = new StringBuilder();
+        for(String key : directives.keySet()) {
+            str.append(key);
+            Directive d = directives.get(key);
+            for(String val : d.getValues()) {
+                str.append(' ').append(val);
+            }
+            str.append("; ");
+        }
+        return str.toString();
+    }
+
     public String toString() {
         StringBuilder str = new StringBuilder();
 
@@ -77,5 +91,17 @@ public class ContentSecurityPolicy {
             }
         }
         return str.toString();
+    }
+
+    public void addDirectiveValue(String key, String domain) {
+        Directive d = directives.get(key);
+        if(d == null) {
+            Directive newD = new Directive(key, new ArrayList<>());
+            directives.put(key, newD);
+            d = newD;
+        }
+        if(!d.getValues().contains(domain)) {
+            d.getValues().add(domain);
+        }
     }
 }
