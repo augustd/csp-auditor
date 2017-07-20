@@ -1,5 +1,7 @@
 package ca.gosecure.cspauditor.gui.generator;
 
+import com.esotericsoftware.minlog.Log;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
@@ -21,6 +23,8 @@ public class CspGeneratorPanel {
     private JPanel resourcePanel;
     private JTable inlinesTable;
     private JPanel inlinePanel;
+    private JPanel test;
+    private JPanel warningConfiguration;
 
     DefaultTableModel tableResourcesModel = new DefaultTableModel() {
         @Override
@@ -47,6 +51,7 @@ public class CspGeneratorPanel {
     }
 
     private void init() {
+
 
         //Resources table
         tableResourcesModel.addColumn("Request");
@@ -122,6 +127,7 @@ public class CspGeneratorPanel {
     }
 
     public void addResource(String url, String type) {
+        Log.debug("Adding resource "+url);
         tableResourcesModel.addRow(new String[]{url, type});
     }
 
@@ -141,6 +147,7 @@ public class CspGeneratorPanel {
     }
 
     public void addInlineScript(String urlString, String line) {
+        Log.debug("Adding inline script from "+urlString);
         tableInlinesModel.addRow(new String[]{urlString, line});
     }
 
@@ -195,15 +202,25 @@ public class CspGeneratorPanel {
         resultTabbedPane = new JTabbedPane();
         resultTabbedPane.setTabLayoutPolicy(0);
         panel4.add(resultTabbedPane, BorderLayout.CENTER);
+        test = new JPanel();
+        test.setLayout(new BorderLayout(0, 0));
+        resultTabbedPane.addTab("Configuration", test);
         configurationPanel = new JPanel();
         configurationPanel.setLayout(new BorderLayout(0, 0));
-        resultTabbedPane.addTab("Configuration", configurationPanel);
+        test.add(configurationPanel, BorderLayout.CENTER);
         final JPanel panel5 = new JPanel();
         panel5.setLayout(new BorderLayout(0, 0));
-        resultTabbedPane.addTab("External Resources", panel5);
+        test.add(panel5, BorderLayout.NORTH);
+        final JTextPane textPane1 = new JTextPane();
+        textPane1.setEditable(false);
+        textPane1.setText("Warning: The following configuration might not be complete. Refer to \"Inline Scripts\" to see scripts that are not compatible with CSP strict mode (No use of \"script-src 'unsafe-inline'\").");
+        panel5.add(textPane1, BorderLayout.CENTER);
+        final JPanel panel6 = new JPanel();
+        panel6.setLayout(new BorderLayout(0, 0));
+        resultTabbedPane.addTab("External Resources", panel6);
         final JSplitPane splitPane1 = new JSplitPane();
         splitPane1.setOrientation(0);
-        panel5.add(splitPane1, BorderLayout.CENTER);
+        panel6.add(splitPane1, BorderLayout.CENTER);
         resourcePanel = new JPanel();
         resourcePanel.setLayout(new BorderLayout(0, 0));
         splitPane1.setRightComponent(resourcePanel);
@@ -211,12 +228,12 @@ public class CspGeneratorPanel {
         splitPane1.setLeftComponent(scrollPane1);
         resourcesTable = new JTable();
         scrollPane1.setViewportView(resourcesTable);
-        final JPanel panel6 = new JPanel();
-        panel6.setLayout(new BorderLayout(0, 0));
-        resultTabbedPane.addTab("Inline Scripts", panel6);
+        final JPanel panel7 = new JPanel();
+        panel7.setLayout(new BorderLayout(0, 0));
+        resultTabbedPane.addTab("Inline Scripts", panel7);
         final JSplitPane splitPane2 = new JSplitPane();
         splitPane2.setOrientation(0);
-        panel6.add(splitPane2, BorderLayout.CENTER);
+        panel7.add(splitPane2, BorderLayout.CENTER);
         final JScrollPane scrollPane2 = new JScrollPane();
         splitPane2.setLeftComponent(scrollPane2);
         inlinesTable = new JTable();

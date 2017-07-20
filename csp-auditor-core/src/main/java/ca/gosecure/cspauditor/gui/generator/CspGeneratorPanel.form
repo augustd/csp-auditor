@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ca.gosecure.cspauditor.gui.generator.CspGeneratorPanel">
   <grid id="27dc6" binding="rootPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="975" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -57,13 +57,34 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <grid id="53f8b" binding="configurationPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+                  <grid id="53f8b" binding="test" layout-manager="BorderLayout" hgap="0" vgap="0">
                     <constraints>
                       <tabbedpane title="Configuration"/>
                     </constraints>
                     <properties/>
                     <border type="none"/>
-                    <children/>
+                    <children>
+                      <grid id="96682" binding="configurationPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints border-constraint="Center"/>
+                        <properties/>
+                        <border type="none"/>
+                        <children/>
+                      </grid>
+                      <grid id="b138b" layout-manager="BorderLayout" hgap="0" vgap="0">
+                        <constraints border-constraint="North"/>
+                        <properties/>
+                        <border type="none"/>
+                        <children>
+                          <component id="dc35c" class="javax.swing.JTextPane" default-binding="true">
+                            <constraints border-constraint="Center"/>
+                            <properties>
+                              <editable value="false"/>
+                              <text value="Warning: The following configuration might not be complete. Refer to &quot;Inline Scripts&quot; to see scripts that are not compatible with CSP strict mode (No use of &quot;script-src 'unsafe-inline'&quot;)."/>
+                            </properties>
+                          </component>
+                        </children>
+                      </grid>
+                    </children>
                   </grid>
                   <grid id="17f63" layout-manager="BorderLayout" hgap="0" vgap="0">
                     <constraints>
