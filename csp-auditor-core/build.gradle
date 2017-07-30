@@ -6,6 +6,7 @@ version '1.0-SNAPSHOT'
 dependencies {
     compile group: 'com.esotericsoftware', name: 'minlog', version: '1.3'
     compile group: 'commons-io', name: 'commons-io', version: '2.4'
+    compile group: 'org.json', name: 'json', version: '20140107'
     testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
 
     //files('$ROOT_DIR$/lib/forms_rt-12.1.8.jar')

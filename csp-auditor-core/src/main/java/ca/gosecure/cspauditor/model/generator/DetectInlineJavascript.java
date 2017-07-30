@@ -41,11 +41,11 @@ public class DetectInlineJavascript {
         List<String> problematicLines = new ArrayList<>();
 
         for(String line : tokens) {
-            if(line.contains(" on")) {
+            if(line.contains(" on")) { //Faster than regex
                 for(String event : jsInlineEvents) {
                     if(line.contains(" "+event)) {
 
-                        Pattern p = Pattern.compile(".{0,10} on" + event + ".{0,50}");
+                        Pattern p = Pattern.compile(".{0,10} " + event + ".{0,50}");
                         Matcher m = p.matcher(line);
 
                         if (m.find()) {

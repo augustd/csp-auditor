@@ -24,6 +24,8 @@ public class CspGeneratorPanel {
     private JTable inlinesTable;
     private JPanel inlinePanel;
     private JPanel test;
+    private JTable reportsTable;
+    private JPanel reportPanel;
     private JPanel warningConfiguration;
 
     DefaultTableModel tableResourcesModel = new DefaultTableModel() {
@@ -38,6 +40,12 @@ public class CspGeneratorPanel {
             return false;
         }
     };
+    DefaultTableModel reportsModel = new DefaultTableModel() {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
 
 
     private CspGeneratorPanelController controller;
@@ -47,39 +55,59 @@ public class CspGeneratorPanel {
         this.controller = controller;
         //this.uiProvider = uiProvider;
 
-        init();
     }
 
-    private void init() {
+    public void init() {
 
 
         //Resources table
+        tableResourcesModel.addColumn("id");
         tableResourcesModel.addColumn("Request");
         tableResourcesModel.addColumn("Type");
         resourcesTable.setModel(tableResourcesModel);
+        resourcesTable.getColumnModel().getColumn(0).setMaxWidth(45);
 
         resourcesTable.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
             int viewRow = resourcesTable.getSelectedRow();
+            if(viewRow == -1) return;
 
             Vector values = (Vector) tableResourcesModel.getDataVector().get(viewRow);
             selectResourceItem((String) values.get(0));
         });
 
         //Inlines table
-
+        tableInlinesModel.addColumn("id");
         tableInlinesModel.addColumn("Request");
         tableInlinesModel.addColumn("Code");
         inlinesTable.setModel(tableInlinesModel);
+        inlinesTable.getColumnModel().getColumn(0).setMaxWidth(45);
 
         inlinesTable.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
             int viewRow = inlinesTable.getSelectedRow();
-
+            if(viewRow == -1) return;
             Vector values = (Vector) tableInlinesModel.getDataVector().get(viewRow);
             selectInlineItem((String) values.get(0));
         });
 
-        //Analyze
 
+        //Report table
+        reportsModel.addColumn("id");
+        reportsModel.addColumn("blocked-uri");
+        reportsModel.addColumn("document-uri");
+        reportsModel.addColumn("original-policy");
+        reportsModel.addColumn("violated-directive");
+        reportsTable.setModel(reportsModel);
+        reportsTable.getColumnModel().getColumn(0).setMaxWidth(45);
+
+        reportsTable.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
+            int viewRow = reportsTable.getSelectedRow();
+            if(viewRow == -1) return;
+
+            Vector values = (Vector) reportsModel.getDataVector().get(viewRow);
+            selectReportItem((String) values.get(0));
+        });
+
+        //Analyze
         analyseButton.addActionListener((ActionEvent e) -> {
             String value = (String) comboBox1.getSelectedItem();
             if (value != null)
@@ -95,6 +123,10 @@ public class CspGeneratorPanel {
                 controller.refreshDomains();
             }
         });
+    }
+
+    private void selectReportItem(String id) {
+        controller.selectReport(id);
     }
 
     public JPanel getRootPanel() {
@@ -126,9 +158,9 @@ public class CspGeneratorPanel {
         tableResourcesModel.setRowCount(0);
     }
 
-    public void addResource(String url, String type) {
-        Log.debug("Adding resource "+url);
-        tableResourcesModel.addRow(new String[]{url, type});
+    public void addResource(String id, String url, String type) {
+        Log.debug("Adding resource " + url);
+        tableResourcesModel.addRow(new String[]{id, url, type});
     }
 
     public void selectResourceItem(String path) {
@@ -146,9 +178,9 @@ public class CspGeneratorPanel {
         tableInlinesModel.setRowCount(0);
     }
 
-    public void addInlineScript(String urlString, String line) {
-        Log.debug("Adding inline script from "+urlString);
-        tableInlinesModel.addRow(new String[]{urlString, line});
+    public void addInlineScript(String id, String urlString, String line) {
+        Log.debug("Adding inline script from " + urlString);
+        tableInlinesModel.addRow(new String[]{id, urlString, line});
     }
 
     public void selectInlineItem(String path) {
@@ -158,6 +190,22 @@ public class CspGeneratorPanel {
     public void setInlineItem(Component resource) {
         inlinePanel.removeAll();
         inlinePanel.add(resource);
+    }
+
+    ////Reports
+
+    public void setReportItem(Component resource) {
+        reportPanel.removeAll();
+        reportPanel.add(resource);
+    }
+
+
+    public void addReport(String id, String blockedUri, String documentUri, String originalPolicy, String violatedDirective) {
+        reportsModel.addRow(new String[]{id, blockedUri, documentUri,originalPolicy,violatedDirective});
+    }
+
+    public void clearReports() {
+        reportsModel.setRowCount(0);
     }
 
     {
@@ -241,6 +289,19 @@ public class CspGeneratorPanel {
         inlinePanel = new JPanel();
         inlinePanel.setLayout(new BorderLayout(0, 0));
         splitPane2.setRightComponent(inlinePanel);
+        final JPanel panel8 = new JPanel();
+        panel8.setLayout(new BorderLayout(0, 0));
+        resultTabbedPane.addTab("Reports", panel8);
+        final JSplitPane splitPane3 = new JSplitPane();
+        splitPane3.setOrientation(0);
+        panel8.add(splitPane3, BorderLayout.CENTER);
+        final JScrollPane scrollPane3 = new JScrollPane();
+        splitPane3.setLeftComponent(scrollPane3);
+        reportsTable = new JTable();
+        scrollPane3.setViewportView(reportsTable);
+        reportPanel = new JPanel();
+        reportPanel.setLayout(new BorderLayout(0, 0));
+        splitPane3.setRightComponent(reportPanel);
     }
 
     /**

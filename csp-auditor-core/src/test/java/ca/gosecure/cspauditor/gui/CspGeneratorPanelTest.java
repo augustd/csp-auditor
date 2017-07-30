@@ -34,18 +34,29 @@ public class CspGeneratorPanelTest {
             public void selectInline(String url) {
 
             }
+
+            @Override
+            public void selectReport(String id) {
+
+            }
         });
+        panel.init();
 
         panel.addDomains(Arrays.asList("facebook.com","shopify.com","yahoo.ca"));
 
         panel.setConfiguration(new JTextArea("default-src 'self'; script-src 'self' www.google-analytics.com ssl.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' www.google-analytics.com ssl.google-analytics.com; object-src 'none'; media-src 'none'; frame-src 'none'"));
 
-        panel.addResource("AAAAAAAAAAAAAAA","SHOULD NOT BE VISIBLE");
+        panel.addResource("00","AAAAAAAAAAAAAAA","SHOULD NOT BE VISIBLE");
         panel.clearResources();
-        panel.addResource("<img src='xxx' onerror='aaaaa'>","/conferences/?test=1b&test=1");
-        panel.addResource("<body onload='aaaaa'>","/index?test=1b&test=1");
+        panel.addResource("1","<img src='xxx' onerror='aaaaa'>","/conferences/?test=1b&test=1");
+        panel.addResource("2","<body onload='aaaaa'>","/index?test=1b&test=1");
 
         panel.setResourceItem(new JTextArea("<img src='xxx' onerror='aaaaa'>"));
+
+
+        panel.setInlineItem(new JTextArea("Inline"));
+
+        panel.setReportItem(new JTextArea("Report"));
 
         frame.add(panel.getRootPanel());
         frame.pack();

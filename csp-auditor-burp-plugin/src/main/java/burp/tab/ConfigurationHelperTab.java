@@ -13,6 +13,7 @@ import ca.gosecure.cspauditor.gui.generator.CspGeneratorPanelController;
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -20,6 +21,8 @@ import java.util.TreeSet;
 import ca.gosecure.cspauditor.model.ContentSecurityPolicy;
 import ca.gosecure.cspauditor.model.generator.DetectInlineJavascript;
 import com.esotericsoftware.minlog.Log;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Tab that contains three parts :
@@ -36,6 +39,7 @@ public class ConfigurationHelperTab implements ITab, CspGeneratorPanelController
 
     private RequestResponsePanel resourceReqRespTab;
     private RequestResponsePanel inlineReqRespTab;
+    private RequestResponsePanel reportReqRespTab;
 
     public ConfigurationHelperTab(final IBurpExtenderCallbacks callbacks) {
 
@@ -43,11 +47,13 @@ public class ConfigurationHelperTab implements ITab, CspGeneratorPanelController
         this.helpers = callbacks.getHelpers();
 
         panel = new CspGeneratorPanel(this);
-
+        panel.init();
         resourceReqRespTab = new RequestResponsePanel(callbacks);
         panel.setResourceItem(resourceReqRespTab);
         inlineReqRespTab = new RequestResponsePanel(callbacks);
         panel.setInlineItem(inlineReqRespTab);
+        reportReqRespTab = new RequestResponsePanel(callbacks);
+        panel.setReportItem(reportReqRespTab);
     }
 
     @Override
@@ -65,16 +71,18 @@ public class ConfigurationHelperTab implements ITab, CspGeneratorPanelController
 
         IHttpRequestResponse[] reqResponses = callbacks.getProxyHistory();
 
-
         ContentSecurityPolicy csp = new ContentSecurityPolicy("CSP");
-
+        csp.addDirectiveValue("default-src","self");
         try {
             URL domainSelected = new URL(domain);
-
+            Log.debug("Analysing domain "+domain);
             panel.clearResources();
             panel.clearInlineScript();
-
+            panel.clearReports();
+            int id = 0;
             for (IHttpRequestResponse reqResp : reqResponses) {
+                id++;
+                Log.debug("Request "+id);
                 IRequestInfo reqInfo = helpers.analyzeRequest(reqResp.getHttpService(), reqResp.getRequest());
                 if (reqResp.getResponse() == null) continue;
                 IResponseInfo respInfo = helpers.analyzeResponse(reqResp.getResponse());
@@ -90,36 +98,61 @@ public class ConfigurationHelperTab implements ITab, CspGeneratorPanelController
                 //Finding inline script
 
                 String host = getHeader("host", reqInfo.getHeaders());
-                if (isRequestToDomain) {
+                if (isRequestToDomain) {//Same-Origin
                     if (mimeType.equals("HTML")) {
                         List<String> problemInline = DetectInlineJavascript.getInstance().findInlineJs(new String(reqResp.getResponse()));
 
                         for (String line : problemInline)
-                            panel.addInlineScript(urlString, line);
+                            panel.addInlineScript(String.valueOf(id), urlString, line);
                     }
                 }
 
 
                 //Finding external resources
 
-                if (isRequestToDomain)
-                    continue; //Same-Origin
+                if (!isRequestToDomain) {//Different-Origin
 
-                String referrer = getHeader("referer", reqInfo.getHeaders());
-                if (referrer.startsWith("http://") || referrer.startsWith("https://")) {
-                    URL referrerUrl = new URL(referrer);
-                    if (domainSelected.getHost().equals(referrerUrl.getHost())) {
-                        panel.addResource(urlString, mimeType);
-                        mimeTypeToDirective(mimeType,protoAndHost,csp);
+                    String referrer = getHeader("referer", reqInfo.getHeaders());
+                    if (referrer.startsWith("http://") || referrer.startsWith("https://")) { //Just to make sure the URL will be parsable
+                        URL referrerUrl = new URL(referrer);
+                        if (domainSelected.getHost().equals(referrerUrl.getHost())) {
+                            panel.addResource(String.valueOf(id), urlString, mimeType);
+                            mimeTypeToDirective(mimeType, protoAndHost, csp);
 
+                        }
                     }
                 }
-            }
-        } catch (MalformedURLException e) {
 
+
+                byte[] completeRequest = reqResp.getRequest();
+                int startOffset = reqInfo.getBodyOffset();
+                if(completeRequest.length - startOffset != 0) { //Skip GET request
+                    byte[] part = Arrays.copyOfRange(completeRequest, startOffset, completeRequest.length);
+                    String body = new String(part);
+                    if (body.contains("{\"csp-report\":{")) {
+                        try {
+                            JSONObject rootJson = new JSONObject(body);
+                            String blockedUri        = rootJson.getJSONObject("csp-report").getString("blocked-uri");
+                            String documentUri       = rootJson.getJSONObject("csp-report").getString("document-uri");
+                            String originalPolicy    = rootJson.getJSONObject("csp-report").getString("original-policy");
+                            String violatedDirective = rootJson.getJSONObject("csp-report").getString("violated-directive");
+                            panel.addReport(String.valueOf(id), blockedUri, documentUri, originalPolicy, violatedDirective);
+                        }
+                        catch (JSONException e){ //Invalid csp-report
+                            Log.error("Invalid CSP report at "+urlString);
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            Log.error(e.getMessage(),e);
         }
 
+
+        csp.addDirectiveValue("report-uri", "/change-this-uri/");
         displayConfiguration(csp);
+        Log.debug("Done analyzing "+domain);
     }
 
     private void mimeTypeToDirective(String mimeType,String host,ContentSecurityPolicy csp) {
@@ -152,10 +185,15 @@ public class ConfigurationHelperTab implements ITab, CspGeneratorPanelController
             case "AVI":
                 directive = "media-src";
                 break;
+            default:
+                Log.debug("Unknown MimeType "+mimeType);
         }
 
         if(directive != null) {
             csp.addDirectiveValue(directive, host);
+            if(host.equals("https://fonts.googleapis.com")) {
+                csp.addDirectiveValue("style-src", "https://fonts.gstatic.com");
+            }
         }
 
     }
@@ -184,28 +222,35 @@ public class ConfigurationHelperTab implements ITab, CspGeneratorPanelController
     }
 
     @Override
-    public void selectInline(String url) {
+    public void selectInline(String id) {
         inlineReqRespTab.selectResponse();
-        displayReqResp(url, inlineReqRespTab);
+        displayReqResp(id, inlineReqRespTab);
     }
 
-    private void displayReqResp(String url, RequestResponsePanel tabbedPane) {
-        IHttpRequestResponse[] reqResponses = callbacks.getSiteMap(url);
-        IHttpRequestResponse reqResp = null;
-        for(IHttpRequestResponse rr : reqResponses) {
-            reqResp = rr;
-            if(rr.getResponse() != null) {
-                break;
+    @Override
+    public void selectReport(String id) {
+        displayReqResp(id, reportReqRespTab);
+    }
+
+    private void displayReqResp(String id, RequestResponsePanel tabbedPane) {
+        //IHttpRequestResponse[] reqResponses = callbacks.getSiteMap(url);
+        try {
+            Integer requestId = Integer.parseInt(id);
+
+            IHttpRequestResponse reqResp = callbacks.getProxyHistory()[requestId-1];
+            if (reqResp != null) {
+
+                tabbedPane.editorRequest.setMessage(reqResp.getRequest(), true);
+                if (reqResp.getResponse() != null) tabbedPane.editorResponse.setMessage(reqResp.getResponse(), false);
+
+            } else {
+                Log.error("Oups request not found.");
             }
         }
-        if (reqResp != null) {
+        catch (NumberFormatException | IndexOutOfBoundsException e) {
 
-            tabbedPane.editorRequest.setMessage(reqResp.getRequest(), true);
-            if (reqResp.getResponse() != null) tabbedPane.editorResponse.setMessage(reqResp.getResponse(), false);
-
-        } else {
-            Log.error("Oups request not found.");
         }
+
     }
 
     private void displayConfiguration(ContentSecurityPolicy policy) {

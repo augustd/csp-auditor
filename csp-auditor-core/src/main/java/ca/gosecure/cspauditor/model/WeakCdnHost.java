@@ -84,12 +84,14 @@ public class WeakCdnHost {
     }
 
     public boolean isUserContentHost(String value) {
+        value = value.replaceFirst("http://","").replaceFirst("https://","");
         preloadLists();
         return blacklistUserContentHosts.contains(value) ||  blacklistUserContentHosts.contains(value+"/");
     }
 
 
     public boolean isHostingVulnerableJs(String value) {
+        value = value.replaceFirst("http://","").replaceFirst("https://","");
         preloadLists();
         return blacklistVulnerableJsHosts.contains(value) || blacklistVulnerableJsHosts.contains(value+"/");
     }

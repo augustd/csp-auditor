@@ -6,7 +6,9 @@ public interface CspGeneratorPanelController {
 
     void refreshDomains();
 
-    void selectResource(String url);
+    void selectResource(String id);
 
-    void selectInline(String url);
+    void selectInline(String id);
+
+    void selectReport(String id);
 }

@@ -43,5 +43,6 @@ public class WeakCdnHostTest {
         assertTrue(wch.isHostingVulnerableJs("ajax.googleapis.com/ajax/libs/"));
         assertTrue(wch.isHostingVulnerableJs("ajax.googleapis.com/ajax/"));
         assertTrue(wch.isHostingVulnerableJs("ajax.googleapis.com/"));
+        assertTrue(wch.isHostingVulnerableJs("https://ajax.googleapis.com/"));
     }
 }
