@@ -10,7 +10,7 @@ This project is packaged as a ZAP and Burp plugin.
 
 ## Download
 
-Last updated : July 20th 2017
+Last updated : August 3th 2017
 
  - [Burp plugin](https://github.com/GoSecure/csp-auditor/blob/master/downloads/csp-auditor-burp-1.jar?raw=true)
  - [ZAP plugin](https://github.com/GoSecure/csp-auditor/blob/master/downloads/cspauditor-alpha-1.zap?raw=true)
