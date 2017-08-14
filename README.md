@@ -17,7 +17,13 @@ Last updated : August 3th 2017
 
 ## Screenshots
 
+Passive rules and custom tab:
+
 ![CSP Auditor Burp Plugin](https://raw.githubusercontent.com/GoSecure/csp-auditor/master/demo.gif)
+
+Configuration builder:
+
+![CSP Auditor Burp Plugin](https://raw.githubusercontent.com/GoSecure/csp-auditor/master/demo2.gif)
 
 ## Building the plugin
 
