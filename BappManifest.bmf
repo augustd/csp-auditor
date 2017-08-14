@@ -1,0 +1,12 @@
+Uuid: 35237408a06043e9945a11016fcbac18
+ExtensionType: 1
+Name: CSP Auditor
+RepoName: csp-auditor
+ScreenVersion: 1.0
+SerialVersion: 1
+MinPlatformVersion: 0
+ProOnly: False
+Author: Philippe Arteau of GoSecure
+ShortDescription: Displays CSP headers for responses, and passively reports CSP weaknesses.
+EntryPoint: csp-auditor-burp-plugin/build/libs/csp-auditor-burp-1.jar
+BuildCommand: gradle :csp-auditor-burp-plugin:jar
