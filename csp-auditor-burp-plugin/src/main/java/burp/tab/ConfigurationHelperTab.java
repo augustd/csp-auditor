@@ -135,7 +135,28 @@ public class ConfigurationHelperTab implements ITab, CspGeneratorPanelController
                             String blockedUri        = rootJson.getJSONObject("csp-report").getString("blocked-uri");
                             String documentUri       = rootJson.getJSONObject("csp-report").getString("document-uri");
                             String originalPolicy    = rootJson.getJSONObject("csp-report").getString("original-policy");
-                            String violatedDirective = rootJson.getJSONObject("csp-report").getString("violated-directive");
+                            // chrome sends just the directive. firefox sends directive + sources. e.g. script-src https://domain.com ...
+                            String violatedDirective = rootJson.getJSONObject("csp-report").getString("violated-directive").split(" ")[0];
+                            String newSrc = blockedUri;
+                            try {
+                                URL url = new URL(blockedUri);
+                                String port = url.getPort() == -1 ? "" : ":" + Integer.toString(url.getPort());
+                                newSrc = url.getProtocol() + "://" + url.getHost() + port;
+                            }
+                            catch (MalformedURLException e) {
+                                if (blockedUri.equalsIgnoreCase("inline")
+                                        || blockedUri .equalsIgnoreCase("eval")){
+                                    newSrc = "unsafe-" + blockedUri;
+                                }
+                                else if (blockedUri.equalsIgnoreCase("data") || blockedUri.equalsIgnoreCase("blob")){
+                                    newSrc = blockedUri + ":";
+                                }
+                                else {
+                                    Log.error("Invalid blocked uri", blockedUri);
+                                }
+                            }
+
+                            csp.addDirectiveValue(violatedDirective, newSrc);
                             panel.addReport(String.valueOf(id), blockedUri, documentUri, originalPolicy, violatedDirective);
                         }
                         catch (JSONException e){ //Invalid csp-report
