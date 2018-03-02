@@ -79,7 +79,7 @@
                             <constraints border-constraint="Center"/>
                             <properties>
                               <editable value="false"/>
-                              <text value="Warning: The following configuration might not be complete. Refer to &quot;Inline Scripts&quot; to see scripts that are not compatible with CSP strict mode (No use of &quot;script-src 'unsafe-inline'&quot;)."/>
+                              <text value="Warning: The following configuration might not be complete. 1) Frame-Ancestors cannot currently be detected for different domains 2) Refer to &quot;Inline Scripts&quot; to see scripts that are not compatible with CSP strict mode (No use of &quot;script-src 'unsafe-inline'&quot;)."/>
                             </properties>
                           </component>
                         </children>
